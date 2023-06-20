@@ -1,5 +1,5 @@
 const express = require('express')
-//const path = require('path')
+const cors = require('cors')
 
 const db = require('./database/db') // importando a função connect do index.js
 const routes = require('./routes/routes') // importando a rota
@@ -10,6 +10,28 @@ const app = express() // inicializa o express
 // conexão com o banco de dados
 db.connect()
 
+const allowedOrigins = [
+    'http://127.0.0.1:5500',
+    'http://www.app.com.br',
+]
+    
+
+// habilita CORS
+app.use(cors({
+    origin: function(origin, callback) {
+        let allowed = true
+
+        // mobile app
+        if (!origin) allowed = true
+
+        if(!allowedOrigins.includes(origin)) {
+            allowed = false
+        }
+
+        callback(null, allowed)
+    }
+
+}))
 
 // habilita server para receber dados json
 app.use(express.json())
